@@ -3,8 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose')
 
+//add route file
 var indexRouter = require('./routes/index');
+var authRoute = require('./routes/auth');
+
 
 var app = express();
 
@@ -18,7 +22,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
+//connection to db
+mongoose.connect('mongodb://localhost:27017/UniToDo', {useNewUrlParser: true ,useUnifiedTopology: true})
+const db = mongoose.connection
+db.on('error', (err) => {
+  console.log(err)
+})
+db.once('open', () => {
+  console.log('Connessione')
+})
+
+//use routes
 app.use('/', indexRouter);
+app.use('/auth', authRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
