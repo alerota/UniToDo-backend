@@ -3,30 +3,42 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const registration = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
-        if(err) {
-            res.json({
-                error: err
-            })
-        }
-
-        let user = new User({
-            username: req.body.username,
-            password: hashedPass
+    var username = req.body.username 
+    User.findOne({username: username})
+        .then(user => {
+            if(user) {
+                res.json({
+                    message: "Esiste già username"
+                })
+            }
+            else {
+                bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
+                    if(err) {
+                        res.json({
+                            error: err
+                        })
+                    }
+            
+                    let user = new User({
+                        username: req.body.username,
+                        password: hashedPass
+                    })
+                
+                    user.save()
+                    .then(user => {
+                        res.json({
+                            message: 'User aggiunto'
+                        })
+                    })
+                    .catch(error => {
+                        res.json({
+                            message: 'Errore'
+                        })
+                    })
+                })
+            }
         })
     
-        user.save()
-        .then(user => {
-            res.json({
-                message: 'User aggiunto'
-            })
-        })
-        .catch(error => {
-            res.json({
-                message: 'Errore'
-            })
-        })
-    })
 }
 
 const login = (req, res, next) => {
