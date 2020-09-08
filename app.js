@@ -4,13 +4,25 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
+var session = require('express-session')
+var passport = require('passport')
 
 //add route file
-var indexRouter = require('./routes/index');
-var authRoute = require('./routes/auth');
+var indexRouter = require('./routes/IndexRoute');
+var authRoute = require('./routes/AuthRoute');
 
 
 var app = express();
+
+//Passport config
+require('./extra/Passport')(passport)
+
+//express session
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+}))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +33,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+
+
+//passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 //connection to db
 mongoose.connect('mongodb://localhost:27017/UniToDo', {useNewUrlParser: true ,useUnifiedTopology: true})
@@ -33,7 +51,7 @@ db.once('open', () => {
 })
 
 //use routes
-app.use('/', indexRouter);
+app.use('', indexRouter);
 app.use('/auth', authRoute)
 
 // catch 404 and forward to error handler
