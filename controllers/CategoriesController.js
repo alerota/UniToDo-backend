@@ -62,6 +62,31 @@ const addNewCategory = (req, res, next) => {
     }
 }
 
+const getCategoryByName = (req, res, next) => {
+    //const par = req.params.name;
+    const { name } = req.params
+
+
+    Category.findOne({name: name}) 
+    .then(category => {
+        if(category) {
+            res.json({
+                category: category
+            })
+        }
+        else{
+            res.json({
+                message: 'Non esite una categoria con questo nome'
+            })
+        }
+    })
+    .catch(error => {
+        res.json({
+            message: "dlkasjldkakldaj" + error
+        })
+    })
+}
+
 module.exports = {
-    getAllCategories, addNewCategory
+    getAllCategories, addNewCategory, getCategoryByName
 }
