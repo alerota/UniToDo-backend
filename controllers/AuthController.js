@@ -2,8 +2,9 @@ const User = require('../models/UserModel')
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 
+
+//registra un nuovo utente
 const registration = (req, res, next) => {
-    
     const {username, password} = req.body
 
     //controllo campi
@@ -53,6 +54,7 @@ const registration = (req, res, next) => {
     }
 }
 
+//effettua il login creando la sessione
 const login = (req, res, next) => {
     passport.authenticate('local', function(err, user, info) {
         if (req.body.username === '' || req.body.password === '')
@@ -73,6 +75,7 @@ const login = (req, res, next) => {
     })(req, res, next);
 }
 
+//effettua il logout cancellando la sessione
 const logout = (req, res, next) => {
     req.logout()
     delete req.session.user

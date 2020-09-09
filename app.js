@@ -8,8 +8,8 @@ var session = require('express-session')
 var passport = require('passport')
 
 //add route file
-var indexRouter = require('./routes/IndexRoute');
 var authRoute = require('./routes/AuthRoute');
+var categoriesRoute = require('./routes/CategoriesRoute');
 
 
 var app = express();
@@ -51,8 +51,8 @@ db.once('open', () => {
 })
 
 //use routes
-app.use('', indexRouter);
 app.use('/auth', authRoute)
+app.use('/categories', categoriesRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
