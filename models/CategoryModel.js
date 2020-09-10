@@ -7,8 +7,12 @@ const categorySchema = new Schema({
     },
     color: {
         type: String
+    },
+    available: {
+        type: Boolean,
+        default: true
     }
-}, {timestamps: true})
+})
 
 const CategorySchema = mongoose.model('categories', categorySchema)
 module.exports = CategorySchema

@@ -6,18 +6,19 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 var session = require('express-session')
 var passport = require('passport')
+// Passport config
+require('./extra/Passport')(passport)
 
 //add route file
 var authRoute = require('./routes/AuthRoute');
 var categoriesRoute = require('./routes/CategoriesRoute');
+var authRoute = require('./routes/AuthRoute');
+var eventsRoute = require('./routes/EventsRoute');
 
 
 var app = express();
 
-//Passport config
-require('./extra/Passport')(passport)
-
-//express session
+// express session
 app.use(session({
   secret: 'secret',
   resave: false,
@@ -34,13 +35,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-
-
-//passport
+// passport
 app.use(passport.initialize())
 app.use(passport.session())
 
-//connection to db
+// connection to db
 mongoose.connect('mongodb://localhost:27017/UniToDo', {useNewUrlParser: true ,useUnifiedTopology: true})
 const db = mongoose.connection
 db.on('error', (err) => {
@@ -50,9 +49,10 @@ db.once('open', () => {
   console.log('Connessione')
 })
 
-//use routes
+// use routes
 app.use('/auth', authRoute)
 app.use('/categories', categoriesRoute)
+app.use('/events', eventsRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
