@@ -3,7 +3,7 @@ const Category = require('../models/CategoryModel')
 
 // ottieni tutte le categorie (disponibili e non)
 const getAllCategories = (req, res, next) => {
-    Category.find()
+    Category.find({userId: req.session.user})
     .then(categories => {
         if(categories) {
             res.json({
@@ -25,7 +25,7 @@ const getAllCategories = (req, res, next) => {
 
 // ottieni tutte le categorie disponibili
 const getAllAvailableCategories = (req, res, next) => {
-    Category.find()
+    Category.find({userId: req.session.user})
     .then(categories => {
         var arrayOfCategories = []
         if(categories) {
@@ -53,7 +53,7 @@ const getAllAvailableCategories = (req, res, next) => {
 
 // ottieni tutte le categorie non disponibili
 const getAllNotAvailableCategories = (req, res, next) => {
-    Category.find()
+    Category.find({userId: req.session.user})
     .then(categories => {
         var arrayOfCategories = []
         if(categories) {
@@ -111,7 +111,8 @@ const addNewCategory = (req, res, next) => {
             else {
                 const newCategory = new Category({
                     name, 
-                    color
+                    color,
+                    userId: req.session.user
                 })
 
                 newCategory.save()
@@ -134,7 +135,7 @@ const addNewCategory = (req, res, next) => {
 const getCategoryByName = (req, res, next) => {
     const { name } = req.params
 
-    Category.findOne({name: name}) 
+    Category.findOne({name: name, userId: req.session.user}) 
     .then(category => {
         if(category) {
             res.json({
@@ -158,7 +159,7 @@ const getCategoryByName = (req, res, next) => {
 const deleteCategory = (req, res, next) => {
     const { name } = req.params
 
-    Category.findOneAndUpdate({name: name}, {available: false}) 
+    Category.findOneAndUpdate({name: name, userId: req.session.user}, {available: false}) 
     .then(category => {
         if(category) {
             res.json({
@@ -190,7 +191,7 @@ const updateCategory = (req, res, next) => {
         })
     } 
     else {
-        Category.findOneAndUpdate({name: name}, {color: color}) 
+        Category.findOneAndUpdate({name: name, userId: req.session.user}, {color: color}) 
         .then(category => {
             if(category) {
                 res.json({

@@ -11,6 +11,9 @@ const categorySchema = new Schema({
     available: {
         type: Boolean,
         default: true
+    }, 
+    userId: {
+        type: String
     }
 })
 

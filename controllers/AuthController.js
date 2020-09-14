@@ -63,9 +63,8 @@ const login = (req, res, next) => {
         User.findOne({username: req.body.username})
         .then(user => {
             if(user) {
-                req.session.user = user
+                req.session.user = user._id
                 req.session.save()
-                
             }
         })
         
